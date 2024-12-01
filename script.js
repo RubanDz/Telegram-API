@@ -1,0 +1,3 @@
+// {"ok":true,"result":[{"update_id":147715544,
+//     "message":{"message_id":1,"from":{"id":5884865975,"is_bot":false,"first_name":"Dzmitry","username":"RDI2023","language_code":"ru"},"chat":{"id":5884865975,"first_name":"Dzmitry","username":"RDI2023","type":"private"},"date":1733043702,"text":"/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}},{"update_id":147715545,
+//     "message":{"message_id":2,"from":{"id":5884865975,"is_bot":false,"first_name":"Dzmitry","username":"RDI2023","language_code":"ru"},"chat":{"id":5884865975,"first_name":"Dzmitry","username":"RDI2023","type":"private"},"date":1733043721,"text":"Hello!"}}]}
