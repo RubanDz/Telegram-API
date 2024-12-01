@@ -12,26 +12,57 @@ const CHAT_ID = '5884865975';
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Обработка POST запроса от формы
-app.post('/send-message', async (req, res) => {
-  const { name, phone, message } = req.body;
+// // Обработка POST запроса от формы
+// app.post('/send-message', async (req, res) => {
+//   const { name, phone, message } = req.body;
   
-  // Формируем сообщение для отправки в Telegram
-  const telegramMessage = `📩 Новое сообщение с формы:\n\n👤 Имя: ${name}\n📞 Телефон: ${phone}\n✉️ Сообщение: ${message || 'Нет сообщения'}`;
+//   // Формируем сообщение для отправки в Telegram
+//   const telegramMessage = `📩 Новое сообщение с формы:\n\n👤 Имя: ${name}\n📞 Телефон: ${phone}\n✉️ Сообщение: ${message || 'Нет сообщения'}`;
 
-  try {
-    await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: CHAT_ID, text: telegramMessage }),
-    });
-    res.status(200).send('Сообщение отправлено в Telegram');
-  } catch (error) {
-    res.status(500).send('Ошибка отправки сообщения');
-  }
-});
+//   try {
+//     await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+//       method: 'POST',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify({ chat_id: CHAT_ID, text: telegramMessage }),
+//     });
+//     res.status(200).send('Сообщение отправлено в Telegram');
+//   } catch (error) {
+//     res.status(500).send('Ошибка отправки сообщения');
+//   }
+// });
 
-// Запуск сервера
-app.listen(PORT, () => {
-  console.log(`Сервер запущен на порту ${PORT}`);
-});
+// // Запуск сервера
+// app.listen(PORT, () => {
+//   console.log(`Сервер запущен на порту ${PORT}`);
+// });
+app.post('/send-message', async (req, res) => {
+    const { name, phone, message } = req.body;
+  
+    // Проверка на пустые значения
+    if (!name || !phone) {
+      return res.status(400).send('Не все обязательные поля заполнены');
+    }
+  
+    const telegramMessage = `Имя: ${name}\nТелефон: ${phone}\nСообщение: ${message}`;
+  
+    try {
+      const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: CHAT_ID,
+          text: telegramMessage,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Ошибка при отправке сообщения');
+      }
+  
+      res.status(200).send('Сообщение отправлено в Telegram');
+    } catch (error) {
+      console.error('Ошибка при отправке в Telegram:', error);
+      res.status(500).send('Ошибка при отправке сообщения в Telegram');
+    }
+  });
+  
