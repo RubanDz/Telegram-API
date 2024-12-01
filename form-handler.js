@@ -71,17 +71,18 @@
 async function sendFormData(formId) {
     const form = document.getElementById(formId);
     const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
+    const data = Object.fromEntries(formData.entries());  // Преобразуем FormData в объект
   
     try {
-      const response = await fetch('/send-message', {
+      const response = await fetch('/send-message', {  // Используем относительный путь
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(data),  // Отправляем данные как JSON
       });
+      
       if (response.ok) {
         alert('Сообщение успешно отправлено!');
-        form.reset();
+        form.reset();  // Сбрасываем форму после отправки
       } else {
         alert('Ошибка при отправке сообщения.');
       }
@@ -93,16 +94,19 @@ async function sendFormData(formId) {
   
   // Привязываем функцию к формам
   document.getElementById('form1').addEventListener('submit', (e) => {
-    e.preventDefault();
+    e.preventDefault();  // Отменяем стандартное поведение формы
     sendFormData('form1');
   });
+  
   document.getElementById('form2').addEventListener('submit', (e) => {
-    e.preventDefault();
+    e.preventDefault();  // Отменяем стандартное поведение формы
     sendFormData('form2');
   });
+  
   document.getElementById('form3').addEventListener('submit', (e) => {
-    e.preventDefault();
+    e.preventDefault();  // Отменяем стандартное поведение формы
     sendFormData('form3');
   });
+  
   
 
