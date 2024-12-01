@@ -1,91 +1,53 @@
-// document.getElementById('telegramForm').addEventListener('submit', function(event) {
-//     event.preventDefault(); // Предотвращает стандартную отправку формы
-
-//     // Собираем данные из формы
-//     const name = document.getElementById('name').value;
-//     const email = document.getElementById('email').value;
-//     const message = document.getElementById('message').value;
-
-//     // Формируем сообщение
-//     const telegramMessage = `Новая заявка:\nИмя: ${name}\nEmail: ${email}\nСообщение: ${message}`;
 
 
+// TODO!!! Работает на всех формах
 
 
-
-    
-//     // Токен бота и Chat ID
-//     const token = '8081439320:AAGJmFOuwvllL6q4U9GcZi2gtRocWg3YYu4'; // Замени на свой токен
-//     const chatId = '5884865975';          
-
-//     // URL для отправки запроса к Telegram API
-//     const url = `https://api.telegram.org/bot${token}/sendMessage`;
-
-//     // Отправка данных с помощью fetch
-//     fetch(url, {
-//         method: 'POST',
-//         headers: { 'Content-Type': 'application/json' },
-//         body: JSON.stringify({
-//             chat_id: chatId,
-//             text: telegramMessage,
-//             parse_mode: 'HTML'
-//         })
-//     })
-//     .then(response => {
-//         if (response.ok) {
-//             alert('Сообщение отправлено!');
-//         } else {
-//             alert('Ошибка при отправке.');
-//         }
-//     })
-//     .catch(error => {
-//         console.error('Ошибка:', error);
-//         alert('Ошибка при отправке.');
-//     });
-// });
 
 
 
 document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('telegramForm').addEventListener('submit', function (event) {
-        event.preventDefault();  // Предотвращает отправку формы
+    const forms = document.querySelectorAll('.contact-form'); // Все формы на странице
 
-        // Собираем данные из формы
-        const name = document.getElementById('name').value;
-        const phone = document.getElementById('phone').value;
-        const sufit = document.getElementById('sufit').value;
-        const size = document.getElementById('size').value;
-        const metr = document.getElementById('metr').value;
-        const punkt = document.getElementById('punkt').value;
+    forms.forEach(form => {
+        form.addEventListener('submit', function (event) {
+            event.preventDefault(); 
 
-        // Токен бота и Chat ID
-        const token = '8081439320:AAGJmFOuwvllL6q4U9GcZi2gtRocWg3YYu4'; // Замените на свой токен
-        const chatId = '5884865975'; // Замените на свой Chat ID
+            // Собираем данные из текущей формы
+            const formId = form.id;  // Получаем ID текущей формы
+            const name = form.querySelector(`#${formId} input[name="name"]`).value;
+            const phone = form.querySelector(`#${formId} input[name="phone"]`).value;
+            const message = form.querySelector(`#${formId} textarea[name="message"]`) ? form.querySelector(`#${formId} textarea[name="message"]`).value : "";
+            const sufit = form.querySelector(`#${formId} input[name="sufit"]`) ? form.querySelector(`#${formId} input[name="sufit"]`).value : "";
+            const size = form.querySelector(`#${formId} input[name="size"]`) ? form.querySelector(`#${formId} input[name="size"]`).value : "";
+            const metr = form.querySelector(`#${formId} input[name="metr"]`) ? form.querySelector(`#${formId} input[name="metr"]`).value : "";
+            const punkt = form.querySelector(`#${formId} input[name="punkt"]`) ? form.querySelector(`#${formId} input[name="punkt"]`).value : "";
 
-        // Формируем сообщение
-        const telegramMessage = `
-            Nowa aplikacja:
-            Imię: ${name}
-            Telefon: ${phone}
-            Sufit: ${sufit}
-            Powierzchnia pokoju (m²): ${size}
-            Metry bieżące (m/b): ${metr}
-            Ilość punktów oświetlenia: ${punkt}
-        `;
+            // Токен бота и Chat ID
+            const token = '8081439320:AAGJmFOuwvllL6q4U9GcZi2gtRocWg3YYu4';
+            const chatId = '5884865975';
 
-        // URL для отправки запроса к Telegram API
-        const url = `https://api.telegram.org/bot${token}/sendMessage`;
+            // Формируем сообщение
+            let telegramMessage = `Nowa aplikacja z ${formId}:\nImię: ${name}\nTelefon: ${phone}\n`;
+            if (sufit) telegramMessage += `Sufit: ${sufit}\n`;
+            if (size) telegramMessage += `Powierzchnia pokoju: ${size} m²\n`;
+            if (metr) telegramMessage += `Metry bieżące: ${metr} m/b\n`;
+            if (punkt) telegramMessage += `Ilość punktów oświetlenia: ${punkt}\n`;
+            if (message) telegramMessage += `Treść wiadomości: ${message}`;
 
-        // Отправка данных с помощью fetch
-        fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: chatId,
-                text: telegramMessage,
-                parse_mode: 'HTML'
+            // URL для отправки данных
+            const url = `https://api.telegram.org/bot${token}/sendMessage`;
+
+            // fetch
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: telegramMessage,
+                    parse_mode: 'HTML'
+                })
             })
-        })
             .then(response => {
                 if (response.ok) {
                     alert('Wiadomość została wysłana!');
@@ -97,5 +59,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.error('Błąd:', error);
                 alert('Błąd przy wysyłaniu.');
             });
+
+            // Очистить форму 
+            form.reset();
+        });
     });
 });
