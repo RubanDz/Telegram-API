@@ -1,3 +1,25 @@
-// {"ok":true,"result":[{"update_id":147715544,
-//     "message":{"message_id":1,"from":{"id":5884865975,"is_bot":false,"first_name":"Dzmitry","username":"RDI2023","language_code":"ru"},"chat":{"id":5884865975,"first_name":"Dzmitry","username":"RDI2023","type":"private"},"date":1733043702,"text":"/start","entities":[{"offset":0,"length":6,"type":"bot_command"}]}},{"update_id":147715545,
-//     "message":{"message_id":2,"from":{"id":5884865975,"is_bot":false,"first_name":"Dzmitry","username":"RDI2023","language_code":"ru"},"chat":{"id":5884865975,"first_name":"Dzmitry","username":"RDI2023","type":"private"},"date":1733043721,"text":"Hello!"}}]}
+// Добавь этот скрипт в HTML или отдельный файл
+document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Остановка стандартного действия формы
+
+        const formData = new FormData(form);
+        const data = {};
+        formData.forEach((value, key) => {
+            data[key] = value;
+        });
+
+        try {
+            const response = await fetch('https://monkfish-app-jhqmo.ondigitalocean.app/send-message', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            alert(result.message);
+        } catch (error) {
+            console.error('Ошибка:', error);
+            alert('Произошла ошибка при отправке.');
+        }
+    });
+});

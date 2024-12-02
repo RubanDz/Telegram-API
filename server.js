@@ -1,68 +1,36 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const fetch = require('node-fetch');
+const axios = require('axios');
+const cors = require('cors'); // Импортируем CORS
+require('dotenv').config();
+
 const app = express();
-const PORT = process.env.PORT || 3000;
+const port = 3000;
 
-// Замените на ваш Telegram Bot Token и Chat ID
-const TELEGRAM_TOKEN = '8081439320:AAGJmFOuwvllL6q4U9GcZi2gtRocWg3YYu4';
-const CHAT_ID = '5884865975';
-
-// Middleware для обработки JSON данных
-app.use(bodyParser.json());
+app.use(cors()); // Включаем CORS для всех запросов
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-// // Обработка POST запроса от формы
-// app.post('/send-message', async (req, res) => {
-//   const { name, phone, message } = req.body;
-  
-//   // Формируем сообщение для отправки в Telegram
-//   const telegramMessage = `📩 Новое сообщение с формы:\n\n👤 Имя: ${name}\n📞 Телефон: ${phone}\n✉️ Сообщение: ${message || 'Нет сообщения'}`;
-
-//   try {
-//     await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
-//       method: 'POST',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify({ chat_id: CHAT_ID, text: telegramMessage }),
-//     });
-//     res.status(200).send('Сообщение отправлено в Telegram');
-//   } catch (error) {
-//     res.status(500).send('Ошибка отправки сообщения');
-//   }
-// });
-
-// // Запуск сервера
-// app.listen(PORT, () => {
-//   console.log(`Сервер запущен на порту ${PORT}`);
-// });
-app.post('/send-message', async (req, res) => {
+// Обработчик маршрута
+app.post('/send', async (req, res) => {
     const { name, phone, message } = req.body;
-  
-    // Проверка на пустые значения
-    if (!name || !phone) {
-      return res.status(400).send('Не все обязательные поля заполнены');
-    }
-  
-    const telegramMessage = `Имя: ${name}\nТелефон: ${phone}\nСообщение: ${message}`;
-  
+    const chatId = process.env.TELEGRAM_CHAT_ID;
+    const token = process.env.TELEGRAM_BOT_TOKEN;
+
+    const text = `📩 Новое сообщение:\n👤 Имя: ${name}\n📞 Телефон: ${phone}\n✉️ Сообщение: ${message || 'Нет сообщения'}`;
+
     try {
-      const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: CHAT_ID,
-          text: telegramMessage,
-        }),
-      });
-  
-      if (!response.ok) {
-        throw new Error('Ошибка при отправке сообщения');
-      }
-  
-      res.status(200).send('Сообщение отправлено в Telegram');
+        await axios.post(`https://api.telegram.org/bot${token}/sendMessage`, {
+            chat_id: chatId,
+            text: text
+        });
+        res.status(200).send({ success: true, message: 'Сообщение отправлено!' });
     } catch (error) {
-      console.error('Ошибка при отправке в Telegram:', error);
-      res.status(500).send('Ошибка при отправке сообщения в Telegram');
+        res.status(500).send({ success: false, message: 'Ошибка отправки сообщения', error: error.message });
     }
-  });
-  
+});
+
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+});
+
