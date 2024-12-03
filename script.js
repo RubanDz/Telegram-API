@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = Object.fromEntries(formData.entries());
 
       try {
-        const response = await fetch('http://localhost:3000/send', {
+        const response = await fetch('https://telegram-api-six-ochre.vercel.app/send', {
           method: 'POST',
           headers: {
             'Content-Type': 'https://telegram-api-six-ochre.vercel.app/send',
