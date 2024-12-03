@@ -11,8 +11,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const response = await fetch('http://localhost:3000/send', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'https://telegram-api-six-ochre.vercel.app/send',
           },
+
+
+
+          // telegram-api-six-ochre.vercel.app
+
           body: JSON.stringify(data),
         });
 
